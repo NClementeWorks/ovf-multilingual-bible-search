@@ -1,0 +1,123 @@
+#mbs_main_container
+
+  input, .v-combobox__selection-text 
+    font-size: .8rem
+
+  .v-field.v-field--appended 
+    --v-field-padding-end: 0px
+
+  .v-field--appended
+    padding-inline-end: 4px
+
+  .v-input--density-compact 
+    --v-input-padding-top: 0px
+
+  .v-input--density-compact .v-field--variant-outlined, .v-input--density-compact .v-field--single-line, .v-input--density-compact .v-field--no-label 
+    --v-field-padding-bottom: 0px
+
+  .v-input--density-compact .v-field--variant-outlined 
+    --v-input-control-height: 24px
+
+  .v-input 
+    --v-input-chips-margin-top: 0px
+    position: relative
+
+  .v-field--variant-outlined, .v-field--single-line, .v-field--no-label 
+    --v-field-padding-top: 0px
+
+  .v-list-item--density-default.v-list-item--one-line 
+    min-height: 36px
+
+  .v-combobox__menu-icon
+    margin-inline-start: 0px
+
+  .v-combobox__menu-icon::before
+    content: ''
+    width: 0
+    height: 0
+    border-top: 0.25rem solid black
+    border-right: 0.25rem solid transparent
+    border-bottom: 0.25rem solid transparent
+    border-left: 0.25rem solid black
+    transform: rotate(45deg)
+    top: calc( 50% - 0.1rem )
+    position: absolute
+    
+  .v-field__clearable > .v-icon
+    display: flex
+    align-items: center
+    justify-content: center
+    margin-right: -0.5rem
+
+    &::before
+      content: "+"
+      width: 1.25rem
+      height: 1.25rem
+      position: absolute
+      font-style: normal
+      border: 1px solid gray
+      border-radius: 100%
+      display: flex
+      align-items: center
+      justify-content: center
+      font-size: 1rem
+      line-height: 1
+      transform: rotate(45deg)
+
+  .v-input__details
+    position: absolute
+    top: 100%
+
+  .v-combobox 
+    input[type=text]
+      border: none
+
+    .v-combobox__selection
+      margin-top: 0
+
+      &-text
+        overflow: visible
+
+
+.v-combobox__content
+  
+  .v-combobox__mask
+    background: rgb( var( --v-theme-blue_bright-lighten-3 ) )
+    color: #444
+    font-weight: 600
+    border-radius: 0.25rem
+
+  .v-list
+    &::-webkit-scrollbar
+      width: .5rem
+    &::-webkit-scrollbar-track
+      background: transparent
+      border-bottom-right-radius: .25rem
+      &:hover
+        background: rgb( var( --v-theme-surface-lighten-2 ) )
+    &::-webkit-scrollbar-thumb
+      background: rgb( var( --v-theme-surface-lighten-1 ) )
+      border-radius: .25rem
+      &:hover
+        background: rgb( var( --v-theme-surface ) )
+
+
+  .v-list-item    
+    
+    &:hover
+      background: rgb( var( --v-theme-green_bright-lighten-3 ) )
+
+    &:focus-visible
+      background: rgb( var( --v-theme-green_bright ) )
+
+    &::after
+      border: none
+
+    &--density-default:not(.v-list-item--nav).v-list-item--one-line
+      min-height: 1rem
+
+    &--active.v-list-item--variant-text .v-list-item__overlay
+      background: rgb( var( --v-theme-blue_bright ) )
+
+.v-menu > .v-overlay__content > .v-list.v-theme--custom_theme
+  background: rgb( var( --v-theme-surface-lighten-2 ) )

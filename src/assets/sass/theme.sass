@@ -1,0 +1,55 @@
+#mbs_main_container
+
+  --passage_action_button_opacity: .4
+
+  button
+    background: rgb( var( --v-theme-surface-lighten-1 ) )
+
+  .passage_action_button
+    // background: #ddd
+    color: #888
+    margin: .25rem
+    border-radius: 100% !important
+
+    &s_wrapper
+      margin: 0 .25rem
+      line-height: 1
+
+    &.v-btn--icon .v-icon
+      --v-icon-size-multiplier: .5
+          
+    &:hover
+      opacity: 1
+      transition: .3s ease all
+
+    &--remove
+      opacity: var( --passage_action_button_opacity )
+      &:hover
+        background: rgb( var( --v-theme-error ) )
+        color: white
+        opacity: 1
+
+    &--submit
+      background: rgb( var( --v-theme-primary ) )
+      color: white
+      &:hover
+        background: deeppink
+
+    &--add
+      background: rgb( var( --v-theme-primary ) )
+      color: white
+      &:hover
+        background: deeppink
+
+    &--edit
+      opacity: var( --passage_action_button_opacity )
+      &:hover
+        background: rgb( var( --v-theme-primary ) )
+        color: white 
+        opacity: 1
+
+    &--cancel
+      opacity: var( --passage_action_button_opacity )
+      &:hover
+        opacity: 1
+      
