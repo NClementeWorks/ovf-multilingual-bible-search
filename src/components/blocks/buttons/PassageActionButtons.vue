@@ -38,7 +38,7 @@
 
 <template>
   <div
-    class="passage_actions_buttons_wrapper ml-2 d-flex flex-nowrap"
+    class="passage_actions_buttons_wrapper ml-4 d-flex flex-nowrap"
     data-screen_media_only
     >
     

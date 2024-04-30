@@ -141,9 +141,10 @@
     >
     <!-- :key="`${selected.content.book.order}_${selected.content.chapter}`" -->
     <VExpansionPanel
-      elevation="1"
+      elevation="0"
       rounded="sm"
       value="book_panel"
+      bg-color="transparent"
       >
       <VExpansionPanelTitle
         class="cite_selector_heading"
@@ -254,7 +255,6 @@
   
   .cite_selector
     width: fit-content
-    background: rgb( var( --v-theme-surface-lighten-1 ) )
     color: #000
     display: flex
     flex-direction: column
@@ -266,27 +266,32 @@
     font-weight: normal
     font-size: 1rem
 
-    .v-expansion-panel-title__overlay
-      background: transparent
+    .v-expansion-panel
+
+      &-text__wrapper
+        padding: 0 1rem 1rem
+      
+      &-title__overlay
+        background: transparent
 
     &_content_wrapper
       top: 3rem
       left: 0
       width: 100%
       display: block
-      background: rgb( var( --v-theme-surface-lighten-1 ) )
+      background: transparent
       z-index: 1
       font-size: .8rem
       position: absolute
       border-bottom-left-radius: .25rem
       border-bottom-right-radius: .25rem
-      box-shadow: 0 1.5rem 3rem #8881, 0 .15rem .15rem #0003
 
       &.embeded
         position: relative
         top: 0
 
     &_heading
+      background: transparent
       display: flex
       justify-content: space-between
       padding: 1rem
@@ -323,6 +328,8 @@
 
       &_wrapper
         position: relative
+        border: 1px solid rgb( var( --v-theme-surface  ) )
+        border-radius: .5rem  
 
       .cite_selector_closed &
         height: 0
@@ -409,12 +416,10 @@
         opacity: 1
 
         &_top
-          background-image: linear-gradient( rgb( var( --v-theme-surface ) ), transparent )
           // background-image: linear-gradient( transparentize( darken( cornflowerblue, 50 ), .9 ), transparent )
           top: 0
         &_bottom
           bottom: 0
-          background-image: linear-gradient( transparent, rgb( var( --v-theme-surface ) ) )
           // background-image: linear-gradient( transparent, transparentize( darken( cornflowerblue, 50 ), .9 ) )
           border-bottom-left-radius: .25rem
           border-bottom-right-radius: .25rem

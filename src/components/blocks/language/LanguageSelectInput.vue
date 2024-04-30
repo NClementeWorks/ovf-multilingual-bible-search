@@ -35,9 +35,9 @@
 <template>
   <VCard
     v-if="selected?.content"
-    class="language_select pa-2 d-flex flex-row"
-    color="surface-lighten-1"
-    elevation="1"
+    class="language_select pa-4 d-flex flex-row"
+    color="transparent"
+    elevation="0"
     >
 
     <VCombobox
@@ -106,8 +106,7 @@
 .language_select
   display: flex
   align-items: center
-  padding: 0.25rem
-  background: rgb( var( --v-theme-surface-lighten-1 ) )
+  padding: 0.5rem
   color: #000
   border-radius: 0.25rem
 

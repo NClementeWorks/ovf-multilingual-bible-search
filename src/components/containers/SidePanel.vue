@@ -68,7 +68,7 @@
         >
         <div class="d-flex">
           <h1 v-if="expanded_side_panel">Multilingual Bible Search</h1>
-          <h1 v-else>M<br/>B<br/>S</h1>
+          <h1 v-else title="Multilingual Bible Search">M<br/>B<br/>S</h1>
         </div>
       </VToolbarTitle>
 
@@ -150,6 +150,7 @@
       h1
         margin-top: 0
         line-height: 1
+        text-wrap: wrap
 
     .select_new
       align-items: flex-start

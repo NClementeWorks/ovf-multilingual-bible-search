@@ -172,15 +172,15 @@
       <div v-else
         class="initial_search_options">
 
-        <div>
-          <h2>Choose a Language:</h2>
+        <div class="language_select_wrapper">
+          <h2>Choose Language:</h2>
           <LanguageSelectInput
-            class="initial_search_input"
-            />
+          class="initial_search_input"
+          />
         </div>
-
-        <div>
-          <h2>Select a Passage:</h2>
+        
+        <div class="cite_select_wrapper">
+          <h2>Select Passage:</h2>
 
           <CiteSelector
             :embeded="true"
@@ -320,8 +320,6 @@
 
     .passage_group
       border-bottom: 1px solid #ddd
-      border-radius: .5rem
-      box-shadow: 0 0 .75rem -.25rem #ccc
       margin-bottom: .5rem
       padding: 1rem
       width: 100%
@@ -369,8 +367,12 @@
     .language
       &_label
         justify-content: start
+
       &_select
         justify-content: start
+
+        &_wrapper
+          align-items: center
           
     .cite
       &_label
@@ -380,6 +382,10 @@
       &_select
         justify-content: start
         flex-direction: row
+
+        &_wrapper
+          align-items: flex-start
+
 
   .initial_search
 
