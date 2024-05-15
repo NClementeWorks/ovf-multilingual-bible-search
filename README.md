@@ -1,6 +1,16 @@
-# ovf-multilingual-bible-search
+# OVF Multilingual Bible Search
 
-This template should help get you started developing with Vue 3 in Vite.
+A Bible search application to help multi-lingual church communities.
+
+This application allows for people to search for multiple Bible passages simultaneously in multiple languages. The results can be grouped by language, passage, or verse by verse and can be exported as a Word Document, plain text file or printed out.
+
+The oridginal purpose was to provide members in One Voice Fellowship church with multilingual handouts non-English speakers could follow. Please, read our use case article at [Multilingual Bible Search](http://nolianiclemente.com/use_cases/multilingual-bible-search#the-challenge)
+
+I kindly ask you request permission to fork or copy this project at [noliani@onevoicefellowship.org](mailto:noliani@onevoicefellowship.org). Thanks :-)
+
+## Project Development
+
+Application developed with Vue 3 and Vuetify in Vite. It fetches data from a custom API built in WordPress and currently provided at the [One Voice Fellowship website ](https://onevoicefellowship.org). This API relies on Public Domain and Creative Commons licensed Bibles hosted in the local WordPress database.
 
 ## Recommended IDE Setup
 
