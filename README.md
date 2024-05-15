@@ -1,6 +1,7 @@
 # OVF Multilingual Bible Search
 
 A Bible search application to help multi-lingual church communities.
+[See this project at work](https://onevoicefellowship.org/bible-search)
 
 This application allows for people to search for multiple Bible passages simultaneously in multiple languages. The results can be grouped by language, passage, or verse by verse and can be exported as a Word Document, plain text file or printed out.
 
