@@ -21,6 +21,18 @@
 
   const options_list = computed ( () => {
     
+    // match book number + name + space + chapter + colon (:)
+    if ( cite_text.value?.match( /^([1-3] )?[a-zA-Z]+ [0-9]{1,3}[:.]{1}/ ) ) {
+      const selected_book = cite_text.value.match( /^([1-3] )?[a-zA-Z]+/ ) [ 0 ]
+      const selected_chapter = cite_text.value.match( /(?<= )[0-9]{1,3}(?=[:|.])/ ) [ 0 ]
+      const chapter_verse_separator = cite_text.value.match( /[:|.]/ ) [ 0 ]
+      const book_idx = initial_book_options.findIndex( book => book.toLowerCase () === selected_book?.toLowerCase ().trim () )
+      const verses = bible_book_chapters [ book_idx ] [ parseInt ( selected_chapter ) - 1 ]
+      const verses_array = new Array ( verses ).fill ()
+      const verses_options = verses_array.map ( ( v, idx ) => `${ initial_book_options [ book_idx ] } ${ selected_chapter }${ chapter_verse_separator }${ idx + 1 }`)
+      return verses_options
+    }
+    
     // match book number + name + space
     else if ( cite_text.value?.match( /^([1-3] )?[a-zA-Z]+ / ) ) {
       const selected_book = cite_text.value.match( /^([1-3] )?[a-zA-Z]+/ ) [ 0 ]
