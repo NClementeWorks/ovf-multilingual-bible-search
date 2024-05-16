@@ -10,28 +10,61 @@
   })
   const { item_key } = toRefs ( props )
 
-  const cite_text = ref ( { text: '' } )
+  const cite = ref ( '' )
+  const cite_select_el = ref ()
 
-  const initial_book_options = Object.keys ( bible_structure ).map ( ( book, idx ) => ({ text: book, order: idx + 1 }))
+  const initial_book_options = Object.keys ( bible_structure )
   const bible_book_chapters = Object.values ( bible_structure )
   const current_step = ref ( 'book' )
 
-  const next_cites = computed ( () => {
-    return initial_book_options
+
+
+  const options_list = computed ( () => {
+    
+    // match book number + name + space
+    else if ( cite_text.value?.match( /^([1-3] )?[a-zA-Z]+ / ) ) {
+      const selected_book = cite_text.value.match( /^([1-3] )?[a-zA-Z]+/ ) [ 0 ]
+      const book_idx = initial_book_options.findIndex( book => {
+        const book_regex = new RegExp ( selected_book?.trim (), 'i' )
+        const book_result = book_regex.exec ( book )
+        return !!book_result
+      })
+      const chapters = bible_book_chapters [ book_idx ]
+      const chapters_options = chapters.map ( ( ch, idx ) => `${ initial_book_options [ book_idx ] } ${ idx + 1 }` )
+      return chapters_options
+    }
+
+    else
+      return initial_book_options
     // John
     // John 3 <-- on added space, add chapters
     // John 3:16 <-- on added semi-colon (:) or period (.), add verse from
     // John 3:16-17 <-- on added dash (-), add verse to
   } )
 
+  const cite_text = computed ( {
+    get () { return cite.value },
+    set ( value ) {
+      // if book, complete book name
+      if ( value?.match( /^([1-3] )?[a-zA-Z]+ $/ ) ) {
+        // select full book name
+        const selected_book = value.match( /^([1-3] )?[a-zA-Z]+/ ) [ 0 ]
+        const full_book_name = initial_book_options.find( book => {
+          const book_regex = new RegExp ( selected_book?.trim (), 'i' )
+          const book_result = book_regex.exec ( book )
+          return !!book_result
+        })
+        cite.value = full_book_name + ' '
+      }
+      else
+        cite.value = value
+    }
+  })
+
   const cite_keydown = ev => {
-    console.log ('cite_keydown', ev)
-    // if space
-    // select book and append book chapters
-    // if semi-colon (:) or period (.)
-    // select book>chapter and append verse-from
-    // if dash (-)
-    // select book>chapter>verse-from and append verse-to
+    if ( ev.key === 'Enter' ) {
+      cite_select_el.value.blur ()
+    }
   }
 
   const verify_selection = ev => {
@@ -47,18 +80,17 @@
   <div class="cite_select">
 
     <VCombobox
-      ref="cite_select_text"
+      ref="cite_select_el"
       class="cite_select_text"
       v-model="cite_text"
-      :items="next_cites"
-      item-title="text"
+      :items="options_list"
       :tabindex="1"
       clearable
       return-object
       open-on-clear
       hide-details="auto"
-      @keydown="cite_keydown"
       @update:model-value="verify_selection"
+      @keydown="cite_keydown"
       />
 
   </div>
