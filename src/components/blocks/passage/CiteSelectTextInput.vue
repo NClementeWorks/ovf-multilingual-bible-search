@@ -13,63 +13,110 @@
   const cite = ref ( '' )
   const cite_select_el = ref ()
 
+  const selected = item_key?.value
+    ? ref ( Cite.selected_cites_map.value [ item_key.value ] )
+    : Cite.new_cite_to_add
+  
   const initial_book_options = Object.keys ( bible_structure )
   const bible_book_chapters = Object.values ( bible_structure )
   const current_step = ref ( 'book' )
 
+  const book_regex = /^([1-3] )?[a-zA-Z]+ /
+  const book_chapter_regex = /^([1-3] )?[a-zA-Z]+ [0-9]{1,3}[:.]{1}/
+  const book_chapter_verse_regex = /^([1-3] )?[a-zA-Z]+ [0-9]{1,3}[:.]{1}[0-9]{1,3}(‐|‑|-|–|—|―)/
 
+  const extract_from_string = ( value, regex ) => {
+    const res = value.match ( regex )
+    return res && res [ 0 ]
+  }
+  // match number + name + space
+  const extract_book_name = value => extract_from_string ( value, /^([1-3] )?[a-zA-Z]+/ )
+  // match space + chapter + colon (:) | dot (.)
+  const extract_chapter_number = value => extract_from_string ( value, /(?<= )[0-9]{1,3}(?=[:.])/ )
+  // Including colon and period as the most common chapter-verse separators
+  const extract_chapter_verse_separator = value => extract_from_string ( value, /[:.]/ )
+  // match colon (:) | dot (.) + verse + dash (-)
+  const extract_first_verse_number = value => extract_from_string ( value, /(?<=[:.])[0-9]{1,3}(?=(‐|‑|-|–|—|―))/ )
+  // Including all dash type: Hyphen, Non-Breaking Hyphen, Dash, En Dash, Em Dash, Horizontal Bar
+  const extract_verses_separator = value =>  extract_from_string ( value, /(‐|‑|-|–|—|―)/ )
+  // match dash (-) + number
+  const extract_last_verse_number = value => extract_from_string ( value, /(?<=(‐|‑|-|–|—|―))[0-9]{1,3}$/ )
+
+  const get_book_index = book_name => {
+    const book_regex = new RegExp ( book_name?.trim (), 'i' )
+    return initial_book_options.findIndex ( book => !!book_regex.exec ( book ) )
+  }
 
   const options_list = computed ( () => {
     
-    // match book number + name + space + chapter + colon (:)
-    if ( cite_text.value?.match( /^([1-3] )?[a-zA-Z]+ [0-9]{1,3}[:.]{1}/ ) ) {
-      const selected_book = cite_text.value.match( /^([1-3] )?[a-zA-Z]+/ ) [ 0 ]
-      const selected_chapter = cite_text.value.match( /(?<= )[0-9]{1,3}(?=[:|.])/ ) [ 0 ]
-      const chapter_verse_separator = cite_text.value.match( /[:|.]/ ) [ 0 ]
-      const book_idx = initial_book_options.findIndex( book => book.toLowerCase () === selected_book?.toLowerCase ().trim () )
+    let options = []
+
+    // John 3:16-17 <-- on added dash (-), add last verse to options
+    if ( cite_text.value?.match( book_chapter_verse_regex ) ) {
+      const selected_book = extract_book_name ( cite_text.value )
+      const selected_chapter = extract_chapter_number ( cite_text.value )
+      const chapter_verse_separator = extract_chapter_verse_separator ( cite_text.value )
+      const selected_first_verse = parseInt ( extract_first_verse_number ( cite_text.value ) )
+      const verses_separator = extract_verses_separator ( cite_text.value )
+
+      const book_idx = get_book_index ( selected_book )
       const verses = bible_book_chapters [ book_idx ] [ parseInt ( selected_chapter ) - 1 ]
-      const verses_array = new Array ( verses ).fill ()
-      const verses_options = verses_array.map ( ( v, idx ) => `${ initial_book_options [ book_idx ] } ${ selected_chapter }${ chapter_verse_separator }${ idx + 1 }`)
-      return verses_options
-    }
-    
-    // match book number + name + space
-    else if ( cite_text.value?.match( /^([1-3] )?[a-zA-Z]+ / ) ) {
-      const selected_book = cite_text.value.match( /^([1-3] )?[a-zA-Z]+/ ) [ 0 ]
-      const book_idx = initial_book_options.findIndex( book => {
-        const book_regex = new RegExp ( selected_book?.trim (), 'i' )
-        const book_result = book_regex.exec ( book )
-        return !!book_result
-      })
-      const chapters = bible_book_chapters [ book_idx ]
-      const chapters_options = chapters.map ( ( ch, idx ) => `${ initial_book_options [ book_idx ] } ${ idx + 1 }` )
-      return chapters_options
+      const verses_array = new Array ( verses - selected_first_verse ).fill ()
+      options = verses_array.map ( ( v, idx ) => `${ initial_book_options [ book_idx ] } ${ selected_chapter }${ chapter_verse_separator }${ selected_first_verse }${ verses_separator }${ selected_first_verse + idx + 1 }`)
     }
 
+    // John 3:16 <-- on added semi-colon (:) or period (.), add first verse to options
+    else if ( cite_text.value?.match( book_chapter_regex ) ) {
+      const selected_book = extract_book_name ( cite_text.value )
+      const selected_chapter = extract_chapter_number ( cite_text.value )
+      const chapter_verse_separator = extract_chapter_verse_separator ( cite_text.value )
+
+      const book_idx = get_book_index ( selected_book )
+      const verses = bible_book_chapters [ book_idx ] [ parseInt ( selected_chapter ) - 1 ]
+      const verses_array = new Array ( verses ).fill ()
+      options = verses_array.map ( ( v, idx ) => `${ initial_book_options [ book_idx ] } ${ selected_chapter }${ chapter_verse_separator }${ idx + 1 }`)
+    }
+    
+    // John 3 <-- on added space, add chapters to options
+    else if ( cite_text.value?.match( book_regex ) ) {
+      const selected_book = extract_book_name ( cite_text.value )
+      const book_idx = get_book_index ( selected_book )
+      const chapters = bible_book_chapters [ book_idx ]
+      options = chapters.map ( ( ch, idx ) => `${ initial_book_options [ book_idx ] } ${ idx + 1 }` )
+    }
+
+    // John <-- when only the book name, show full books list
     else
-      return initial_book_options
-    // John
-    // John 3 <-- on added space, add chapters
-    // John 3:16 <-- on added semi-colon (:) or period (.), add verse from
-    // John 3:16-17 <-- on added dash (-), add verse to
+      options = initial_book_options
+
+    return options
   } )
 
   const cite_text = computed ( {
     get () { return cite.value },
     set ( value ) {
+      
+      const selected_book = extract_book_name ( value )
+      const book_idx = get_book_index ( selected_book )
+      const full_book_name = initial_book_options [ book_idx ]
+
       // if book, complete book name
       if ( value?.match( /^([1-3] )?[a-zA-Z]+ $/ ) ) {
         // select full book name
-        const selected_book = value.match( /^([1-3] )?[a-zA-Z]+/ ) [ 0 ]
-        const full_book_name = initial_book_options.find( book => {
-          const book_regex = new RegExp ( selected_book?.trim (), 'i' )
-          const book_result = book_regex.exec ( book )
-          return !!book_result
-        })
         cite.value = full_book_name + ' '
       }
       else
         cite.value = value
+
+      const selected_first_verse = parseInt ( extract_from_string ( value, /(?<=[:.])[0-9]{1,3}/ ) )
+      selected.value.content.book = full_book_name
+      selected.value.content.chapter = extract_from_string ( value, /(?<= )[0-9]{1,3}/ ) || 1
+      const chapter_verse_separator = extract_chapter_verse_separator ( value )
+      selected.value.content.verse_from = selected_first_verse || 1
+      selected.value.content.verse_to = parseInt ( extract_last_verse_number ( value ) )
+        || selected_first_verse
+          ? selected.value.content.verse_from
+          : bible_book_chapters [ book_idx ] [ parseInt ( selected.value.content.chapter ) - 1 ]
     }
   })
 
@@ -85,11 +132,22 @@
     // add space and go to chapter selection...
   }
 
+  const cite_rules = [
+    value => {
+      const regex = new RegExp ( value?.trim (), 'i' )
+      const result = options_list.value.find ( option => {
+        const res = regex.exec ( option )
+        return res && res [ 0 ]
+      } )
+      return !!result || `No passage found for: "${ value }"`
+    }
+  ]
+
 </script>
 
  <template>
 
-  <div class="cite_select">
+  <div class="cite_select cite_selector_heading">
 
     <VCombobox
       ref="cite_select_el"
@@ -97,13 +155,18 @@
       v-model="cite_text"
       :items="options_list"
       :tabindex="1"
+      auto-select-first
       clearable
-      return-object
       open-on-clear
       hide-details="auto"
+      :rules="cite_rules"
       @update:model-value="verify_selection"
       @keydown="cite_keydown"
-      />
+      >
+      <template #no-data>
+        No Passages Found
+      </template>
+    </VCombobox>
 
   </div>
 
