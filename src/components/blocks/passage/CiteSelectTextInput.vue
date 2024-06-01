@@ -26,7 +26,7 @@
   const book_chapter_verse_regex = /^([1-3] )?[a-zA-Z]+ [0-9]{1,3}[:.]{1}[0-9]{1,3}(‐|‑|-|–|—|―)/
 
   const extract_from_string = ( value, regex ) => {
-    const res = value.match ( regex )
+    const res = value?.trim ()?.match ( regex )
     return res && res [ 0 ]
   }
   // match number + name + space
@@ -109,14 +109,14 @@
         cite.value = value
 
       const selected_first_verse = parseInt ( extract_from_string ( value, /(?<=[:.])[0-9]{1,3}/ ) )
-      selected.value.content.book = full_book_name
+      selected.value.content.book.name = full_book_name
+      selected.value.content.book.order = book_idx + 1
       selected.value.content.chapter = extract_from_string ( value, /(?<= )[0-9]{1,3}/ ) || 1
-      const chapter_verse_separator = extract_chapter_verse_separator ( value )
       selected.value.content.verse_from = selected_first_verse || 1
       selected.value.content.verse_to = parseInt ( extract_last_verse_number ( value ) )
-        || selected_first_verse
+        || ( selected_first_verse
           ? selected.value.content.verse_from
-          : bible_book_chapters [ book_idx ] [ parseInt ( selected.value.content.chapter ) - 1 ]
+          : bible_book_chapters [ book_idx ] [ parseInt ( selected.value.content.chapter ) - 1 ] )
     }
   })
 
