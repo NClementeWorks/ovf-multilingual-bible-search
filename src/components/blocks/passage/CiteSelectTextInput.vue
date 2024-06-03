@@ -30,7 +30,7 @@
     return res && res [ 0 ]
   }
   // match number + name + space
-  const extract_book_name = value => extract_from_string ( value, /^([1-3] )?[a-zA-Z]+/ )
+  const extract_book_name = value => extract_from_string ( value.replace('.',''), /^([1-3] )?[a-zA-Z]+/ )
   // match space + chapter + colon (:) | dot (.)
   const extract_chapter_number = value => extract_from_string ( value, /(?<= )[0-9]{1,3}(?=[:.])/ )
   // Including colon and period as the most common chapter-verse separators
@@ -72,9 +72,11 @@
       const chapter_verse_separator = extract_chapter_verse_separator ( cite_text.value )
 
       const book_idx = get_book_index ( selected_book )
-      const verses = bible_book_chapters [ book_idx ] [ parseInt ( selected_chapter ) - 1 ]
-      const verses_array = new Array ( verses ).fill ()
-      options = verses_array.map ( ( v, idx ) => `${ initial_book_options [ book_idx ] } ${ selected_chapter }${ chapter_verse_separator }${ idx + 1 }`)
+      if ( book_idx ) {
+        const verses = bible_book_chapters [ book_idx ] [ parseInt ( selected_chapter ) - 1 ]
+        const verses_array = new Array ( verses ).fill ()
+        options = verses_array.map ( ( v, idx ) => `${ initial_book_options [ book_idx ] } ${ selected_chapter }${ chapter_verse_separator }${ idx + 1 }`)
+      }
     }
     
     // John 3 <-- on added space, add chapters to options
@@ -104,6 +106,13 @@
       if ( value?.match( /^([1-3] )?[a-zA-Z]+ $/ ) ) {
         // select full book name
         cite.value = full_book_name + ' '
+      }
+      // if selected book and full book name found in books list are different (possible when pasting text)
+      else if ( value?.match( /^([1-3] )?[a-zA-Z]+ / )
+        && full_book_name
+        && full_book_name !== selected_book ) {
+        // change selected book with full book name from books list
+        cite.value = value.replace ( selected_book, full_book_name )
       }
       else
         cite.value = value
